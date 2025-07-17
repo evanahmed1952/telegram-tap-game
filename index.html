@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tap & Win Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    #game {
+      display: none;
+    }
+    #tapBtn {
+      font-size: 30px;
+      padding: 20px 40px;
+      background: #0088cc;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      margin: 20px;
+      cursor: pointer;
+    }
+    #startBtn {
+      font-size: 22px;
+      padding: 15px 30px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #timer, #score {
+      font-size: 24px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tap & Win Game</h1>
+  <div id="menu">
+    <button id="startBtn">Start Game</button>
+  </div>
+  <div id="game">
+    <div id="timer">Time: 10</div>
+    <div id="score">Score: 0</div>
+    <button id="tapBtn">TAP!</button>
+  </div>
+
+  <script>
+    Telegram.WebApp.ready();
+
+    const startBtn = document.getElementById("startBtn");
+    const game = document.getElementById("game");
+    const menu = document.getElementById("menu");
+    const tapBtn = document.getElementById("tapBtn");
+    const timerText = document.getElementById("timer");
+    const scoreText = document.getElementById("score");
+
+    let time = 10;
+    let score = 0;
+    let timer;
+
+    startBtn.onclick = () => {
+      menu.style.display = "none";
+      game.style.display = "block";
+      score = 0;
+      time = 10;
+      scoreText.textContent = "Score: 0";
+      timerText.textContent = "Time: 10";
+      timer = setInterval(() => {
+        time--;
+        timerText.textContent = "Time: " + time;
+        if (time <= 0) {
+          clearInterval(timer);
+          alert("⏱️ Time's up!\nYour Score: " + score);
+          game.style.display = "none";
+          menu.style.display = "block";
+          // এখানে আপনি স্কোর API বা Telegram server-এ পাঠাতে পারেন
+        }
+      }, 1000);
+    }
+
+    tapBtn.onclick = () => {
+      score++;
+      scoreText.textContent = "Score: " + score;
+    }
+  </script>
+</body>
+</html>
