@@ -2,29 +2,23 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Tap & Win Game</title>
+  <title>Tap The Bird Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      background: #f4f4f4;
+      background: linear-gradient(to bottom, #c2f0f7, #a6dcef);
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    #game {
-      display: none;
+    h1 {
+      margin: 20px 0;
+      color: #333;
     }
-    #tapBtn {
-      font-size: 30px;
-      padding: 20px 40px;
-      background: #0088cc;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      margin: 20px;
-      cursor: pointer;
+    #menu, #game {
+      margin-top: 30px;
     }
     #startBtn {
       font-size: 22px;
@@ -35,24 +29,43 @@
       border-radius: 10px;
       cursor: pointer;
     }
-    h1 {
-      margin-bottom: 10px;
+    #tapArea {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      margin: 20px auto;
+      background: url('https://i.imgur.com/PrVZbOH.png') repeat-x;
+      background-size: cover;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+    #bird {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      transition: bottom 0.2s ease;
     }
     #timer, #score {
       font-size: 24px;
       margin: 10px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>Tap & Win Game</h1>
+  <h1>🐦 Tap The Bird!</h1>
   <div id="menu">
     <button id="startBtn">Start Game</button>
   </div>
-  <div id="game">
-    <div id="timer">Time: 10</div>
-    <div id="score">Score: 0</div>
-    <button id="tapBtn">TAP!</button>
+
+  <div id="game" style="display:none;">
+    <div id="timer">⏱️ Time: 10</div>
+    <div id="score">🏆 Score: 0</div>
+    <div id="tapArea">
+      <img src="https://i.imgur.com/eN4zMMe.png" id="bird" alt="Bird">
+    </div>
   </div>
 
   <script>
@@ -61,37 +74,51 @@
     const startBtn = document.getElementById("startBtn");
     const game = document.getElementById("game");
     const menu = document.getElementById("menu");
-    const tapBtn = document.getElementById("tapBtn");
     const timerText = document.getElementById("timer");
     const scoreText = document.getElementById("score");
+    const bird = document.getElementById("bird");
+    const tapArea = document.getElementById("tapArea");
 
     let time = 10;
     let score = 0;
     let timer;
+    let birdPosition = 20;
+    let goingUp = true;
+
+    function animateBird() {
+      birdPosition += goingUp ? 10 : -10;
+      if (birdPosition >= 180) goingUp = false;
+      if (birdPosition <= 20) goingUp = true;
+      bird.style.bottom = birdPosition + "px";
+    }
 
     startBtn.onclick = () => {
       menu.style.display = "none";
       game.style.display = "block";
       score = 0;
       time = 10;
-      scoreText.textContent = "Score: 0";
-      timerText.textContent = "Time: 10";
+      birdPosition = 20;
+      goingUp = true;
+      scoreText.textContent = "🏆 Score: 0";
+      timerText.textContent = "⏱️ Time: 10";
+      const birdInterval = setInterval(animateBird, 200);
+
       timer = setInterval(() => {
         time--;
-        timerText.textContent = "Time: " + time;
+        timerText.textContent = "⏱️ Time: " + time;
         if (time <= 0) {
           clearInterval(timer);
+          clearInterval(birdInterval);
           alert("⏱️ Time's up!\nYour Score: " + score);
           game.style.display = "none";
           menu.style.display = "block";
-          // এখানে আপনি স্কোর API বা Telegram server-এ পাঠাতে পারেন
         }
       }, 1000);
     }
 
-    tapBtn.onclick = () => {
+    tapArea.onclick = () => {
       score++;
-      scoreText.textContent = "Score: " + score;
+      scoreText.textContent = "🏆 Score: " + score;
     }
   </script>
 </body>
