@@ -2,20 +2,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Tap The Bird Game</title>
+  <title>Mermaid Adventure</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      background: linear-gradient(to bottom, #c2f0f7, #a6dcef);
+      background-color: #87CEEB;
       margin: 0;
       padding: 0;
     }
     h1 {
       margin: 20px 0;
-      color: #333;
+      color: #fff;
     }
     #menu, #game {
       margin-top: 30px;
@@ -23,7 +23,7 @@
     #startBtn {
       font-size: 22px;
       padding: 15px 30px;
-      background: #28a745;
+      background: #007bff;
       color: white;
       border: none;
       border-radius: 10px;
@@ -32,39 +32,43 @@
     #tapArea {
       position: relative;
       width: 100%;
-      height: 300px;
+      height: 400px;
       margin: 20px auto;
-      background: url('https://i.imgur.com/PrVZbOH.png') repeat-x;
+      background: url('https://i.imgur.com/EyDSXU9.jpg') no-repeat center center;
       background-size: cover;
       overflow: hidden;
       border-radius: 15px;
     }
-    #bird {
+    #mermaid {
       position: absolute;
-      bottom: 20px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      transition: bottom 0.2s ease;
+      width: 100px;
+    }
+    .item {
+      position: absolute;
+      width: 40px;
+      cursor: pointer;
     }
     #timer, #score {
       font-size: 24px;
       margin: 10px;
-      color: #333;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <h1>🐦 Tap The Bird!</h1>
+  <h1>🧜‍♀️ Mermaid Adventure!</h1>
   <div id="menu">
     <button id="startBtn">Start Game</button>
   </div>
 
   <div id="game" style="display:none;">
-    <div id="timer">⏱️ Time: 10</div>
-    <div id="score">🏆 Score: 0</div>
+    <div id="timer">⏱️ Time: 30</div>
+    <div id="score">💎 Score: 0</div>
     <div id="tapArea">
-      <img src="https://i.imgur.com/eN4zMMe.png" id="bird" alt="Bird">
+      <img src="https://i.imgur.com/nwxG7VX.png" id="mermaid" alt="Mermaid">
     </div>
   </div>
 
@@ -76,50 +80,54 @@
     const menu = document.getElementById("menu");
     const timerText = document.getElementById("timer");
     const scoreText = document.getElementById("score");
-    const bird = document.getElementById("bird");
     const tapArea = document.getElementById("tapArea");
 
-    let time = 10;
+    let time = 30;
     let score = 0;
     let timer;
-    let birdPosition = 20;
-    let goingUp = true;
+    let itemInterval;
 
-    function animateBird() {
-      birdPosition += goingUp ? 10 : -10;
-      if (birdPosition >= 180) goingUp = false;
-      if (birdPosition <= 20) goingUp = true;
-      bird.style.bottom = birdPosition + "px";
+    function spawnItem() {
+      const item = document.createElement("img");
+      item.src = Math.random() > 0.5 ? "https://i.imgur.com/D2O6Mze.png" : "https://i.imgur.com/QrEoBhu.png";
+      item.classList.add("item");
+      item.style.top = Math.random() * 300 + "px";
+      item.style.left = Math.random() * (window.innerWidth - 40) + "px";
+      tapArea.appendChild(item);
+
+      item.onclick = () => {
+        score++;
+        scoreText.textContent = "💎 Score: " + score;
+        item.remove();
+      };
+
+      setTimeout(() => item.remove(), 5000);
     }
 
     startBtn.onclick = () => {
       menu.style.display = "none";
       game.style.display = "block";
       score = 0;
-      time = 10;
-      birdPosition = 20;
-      goingUp = true;
-      scoreText.textContent = "🏆 Score: 0";
-      timerText.textContent = "⏱️ Time: 10";
-      const birdInterval = setInterval(animateBird, 200);
+      time = 30;
+      scoreText.textContent = "💎 Score: 0";
+      timerText.textContent = "⏱️ Time: 30";
+
+      itemInterval = setInterval(spawnItem, 800);
 
       timer = setInterval(() => {
         time--;
         timerText.textContent = "⏱️ Time: " + time;
         if (time <= 0) {
           clearInterval(timer);
-          clearInterval(birdInterval);
+          clearInterval(itemInterval);
           alert("⏱️ Time's up!\nYour Score: " + score);
           game.style.display = "none";
           menu.style.display = "block";
+          const allItems = document.querySelectorAll(".item");
+          allItems.forEach(el => el.remove());
         }
       }, 1000);
-    }
-
-    tapArea.onclick = () => {
-      score++;
-      scoreText.textContent = "🏆 Score: " + score;
-    }
+    };
   </script>
 </body>
 </html>
